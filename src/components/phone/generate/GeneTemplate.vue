@@ -27,8 +27,8 @@
 <script setup>
 import { reactive, ref } from "vue";
 import dayjs from "dayjs";
-import FileSaver from 'file-saver'
 import { useHtmlToImage } from '@/hooks/useHtmlToImage';
+import { saveDownloadWithFeedback } from "@/utils/download";
 import useStore from "@/store";
 import { toast } from "@/utils/feedback";
 const { imageUrl, captureHtmlToImage } = useHtmlToImage();
@@ -70,7 +70,7 @@ const handleTemplateCancel = () => {
   addTemplateModalVisible.value = false;
 }
 
-const handleExportChat = () => {
+const handleExportChat = async () => {
   const chatList = useChatStore.chatList;
   const jsonObj = {
     chatList,
@@ -78,7 +78,11 @@ const handleExportChat = () => {
   const blob = new Blob([JSON.stringify(jsonObj, null, 2)], {
     type: 'application/json'
   })
-  FileSaver.saveAs(blob, `聊天记录 - ${dayjs().format('YYYYMMDDHHmmss')}.json`);
+  await saveDownloadWithFeedback({
+    source: blob,
+    fileName: `聊天记录 - ${dayjs().format('YYYYMMDDHHmmss')}.json`,
+    filterName: "JSON 文件",
+  });
 }
 
 const handleImportChat = (e) => {

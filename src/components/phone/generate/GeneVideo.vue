@@ -6,8 +6,8 @@
   <a-drawer :width="500" title="生成视频" placement="right" :closable="false" :destroyOnClose="true" :open="drawerVisible" @close="onClose">
     <template #extra>
       <a-space>
-        <a-button type="primary" :disabled="!videoUrl" @click="handleDownload">下载Zip</a-button>
-        <a-button danger type="link" shape="circle" :icon="h(CloseOutlined)" :disabled="!generated" @click="onClose" />
+        <a-button type="primary" :disabled="!videoUrl" :loading="isSaving" @click="handleDownload">下载Zip</a-button>
+        <a-button danger type="link" shape="circle" :icon="h(CloseOutlined)" :disabled="!videoUrl" @click="onClose" />
       </a-space>
     </template>
     <p>1、通过网页生成的视频会有模糊、重影的问题无法规避，所以就在考量在线生成视频的必要性，最终决定生成出带有编号的图片序列，用户下载压缩包后自行通过视频剪辑软件剪辑。</p>
@@ -27,6 +27,7 @@ import JSZip from 'jszip';
 import dayjs from "dayjs";
 import html2canvas from 'html2canvas';
 import eventBus from '@/utils/eventBus';
+import { saveDownloadWithFeedback } from "@/utils/download";
 import { sleep } from "@/utils/utils";
 import useStore from "@/store";
 const { useChatStore } = useStore();
@@ -35,10 +36,13 @@ const { useChatStore } = useStore();
 const initInterval = 1000;
 const drawerVisible = ref(false);
 const videoUrl = ref("");
-const zip = new JSZip();
+const isSaving = ref(false);
+let zip = new JSZip();
 // 生成视频
 const handleGenerateVideo = async () => {
   drawerVisible.value = true;
+  // 每次生成都创建新的压缩包，避免重复操作混入上一次的图片序列
+  zip = new JSZip();
   let chatList = _.cloneDeep(useChatStore.chatList);
   nextTick(() => {
     document.getElementById('videoBox').innerHTML = '';
@@ -97,16 +101,15 @@ const onClose = () => {
   videoUrl.value = "";
 }
 
-const handleDownload = () => {
-  const link = document.createElement('a');
-  link.href = videoUrl.value;
-  link.download = `微信聊天视频 - ${dayjs().format('YYYYMMDDHHmmss')}.zip`;
-  link.target = '_blank';
-  link.rel = 'noopener noreferrer';
-
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+const handleDownload = async () => {
+  if (isSaving.value) return;
+  isSaving.value = true;
+  await saveDownloadWithFeedback({
+    source: videoUrl.value,
+    fileName: `微信聊天视频 - ${dayjs().format('YYYYMMDDHHmmss')}.zip`,
+    filterName: "ZIP 压缩包",
+  });
+  isSaving.value = false;
 }
 </script>
 

@@ -37,7 +37,8 @@ export const useSystemStore = defineStore("toolSystem", {
       const toolSystem = await indexedDBStorage.getItem('toolSystem');
       if (!toolSystem) return;
       const {activeMenu, appearance, phoneWidth, phoneHeight, phoneScale, hadDisclaimer, qqGroupLink} = JSON.parse(toolSystem);
-      this.activeMenu = activeMenu;
+      // 只恢复当前存在的菜单，避免旧缓存中的“使用说明”导致配置区域为空
+      this.activeMenu = ["appearance", "chat", "template"].includes(activeMenu) ? activeMenu : "appearance";
       this.appearance = appearance;
       this.phoneWidth = phoneWidth;
       this.phoneHeight = phoneHeight;

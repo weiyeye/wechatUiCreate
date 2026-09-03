@@ -5,9 +5,6 @@
     },
   }" :locale="zhCN">
     <a-layout @click="handleAppClick" @contextmenu="handleAppContextMenu">
-      <a-layout-header :style="headerStyle">
-        <WtHeader />
-      </a-layout-header>
       <a-layout class="content" v-if="!isPhone">
         <!-- <a-layout-sider :style="siderStyle" :width="useSystemStore.activeMenu === 'chat' ? 640 : 480"> -->
         <a-layout-sider :style="siderStyle" :width="640">
@@ -32,9 +29,6 @@
     </a-layout>
   </a-config-provider>
 
-  <a-modal v-model:open="modalOpen" title="注意" :maskClosable="false" @ok="handleModalOk" @cancel="handleModalCancel" cancelText="关闭" okText="我已知晓，关闭">
-    <Instructions />
-  </a-modal>
   <a-modal v-model:open="showDisclaimerModal" title="敬告" :maskClosable="false" @ok="handleDisclaimerModalOk" :cancelButtonProps="{
     style: {
       display: 'none',
@@ -51,50 +45,25 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 dayjs.locale('zh-cn');
-import WtHeader from "@/components/WtHeader.vue"
 import WtSider from "@/components/WtSider.vue"
 // import WtContent from "@/components/WtContent.vue"
 const WtContent = defineAsyncComponent(() => import('@/components/WtContent.vue'));
-import Instructions from "@/components/common/Instructions.vue"
 import Disclaimer from "@/components/common/Disclaimer.vue"
 import ContextMenu from "@/components/common/ContextMenu.vue"
 import IsPhone from "@/components/common/IsPhone.vue"
 import useStore from "@/store";
-const { useSystemStore, useUserStore, useChatStore, useContextMenuStore } = useStore();
+const { useUserStore, useChatStore, useContextMenuStore } = useStore();
 import { ownAvatar, otherAvatar } from "@/utils/avatar";
-
-const headerStyle = {
-  height: '50px',
-  lineHeight: '50px',
-  paddingInline: 0,
-  backgroundColor: '#F1F1F1',
-};
 
 const siderStyle = {
   paddingInline: 0,
   backgroundColor: '#F9F9F9',
 };
 
-const modalOpen = ref(false);
-const showModal = () => {
-  modalOpen.value = true;
-};
-const handleModalOk = e => {
-  useSystemStore.hadDisclaimer = true;
-  modalOpen.value = false;
-};
-const handleModalCancel = e => {
-  modalOpen.value = false;
-};
 const showDisclaimerModal = ref(false);
 const handleDisclaimerModalOk = e => {
   showDisclaimerModal.value = false;
 };
-setTimeout(() => {
-  !useSystemStore.hadDisclaimer && showModal();
-  // showDisclaimerModal.value = true;
-}, 1500)
-
 const showFork = ref(false);
 onMounted(() => {
   showFork.value = process.env.NODE_ENV !== "development";
@@ -159,7 +128,7 @@ const handleResize = () => {
 <style lang="less" scoped>
 @import url(//at.alicdn.com/t/c/font_4238507_is5sbfgeqfc.css);
 .content {
-  height: calc(100vh - 50px);
+  height: 100vh;
   background-color: #FFFFFF;
   background-image: linear-gradient(
     90deg,rgba(159,219,252,.35) 3%,transparent 0),linear-gradient(

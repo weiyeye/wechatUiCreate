@@ -6,7 +6,7 @@
   <a-drawer :width="500" title="生成动图" placement="right" :closable="false" :destroyOnClose="true" :open="drawerVisible" @close="onClose">
     <template #extra>
       <a-space>
-        <a-button type="primary" :disabled="!gifUrl" @click="handleDownload">下载</a-button>
+        <a-button type="primary" :disabled="!gifUrl" :loading="isSaving" @click="handleDownload">下载</a-button>
         <a-button danger type="link" shape="circle" :icon="h(CloseOutlined)" :disabled="!gifUrl" @click="onClose" />
       </a-space>
     </template>
@@ -25,6 +25,7 @@ import html2canvas from 'html2canvas';
 import GIF from 'gif.js';
 import dayjs from "dayjs";
 import eventBus from '@/utils/eventBus';
+import { saveDownloadWithFeedback } from "@/utils/download";
 import { sleep } from "@/utils/utils";
 import useStore from "@/store";
 const { useChatStore, useSystemStore } = useStore();
@@ -33,6 +34,7 @@ const { useChatStore, useSystemStore } = useStore();
 const initInterval = 1000;
 const drawerVisible = ref(false);
 const gifUrl = ref("")
+const isSaving = ref(false);
 // 生成动图
 const handleGenerateGif = async () => {
   drawerVisible.value = true;
@@ -95,15 +97,14 @@ const onClose = () => {
   gifUrl.value = "";
 }
 
-const handleDownload = () => {
-  const link = document.createElement('a');
-  link.href = gifUrl.value;
-  link.download = `微信聊天图片 - ${dayjs().format('YYYYMMDDHHmmss')}.gif`;
-  link.target = '_blank';
-  link.rel = 'noopener noreferrer';
-
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+const handleDownload = async () => {
+  if (isSaving.value) return;
+  isSaving.value = true;
+  await saveDownloadWithFeedback({
+    source: gifUrl.value,
+    fileName: `微信聊天动图 - ${dayjs().format('YYYYMMDDHHmmss')}.gif`,
+    filterName: "GIF 动图",
+  });
+  isSaving.value = false;
 }
 </script>

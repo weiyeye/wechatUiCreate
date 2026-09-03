@@ -57,6 +57,7 @@ import { Cropper, Preview } from 'vue-advanced-cropper';
 import 'vue-advanced-cropper/dist/style.css';
 import 'vue-advanced-cropper/dist/theme.classic.css';
 import { fileToBase64 } from "@/utils/utils";
+import { saveDownloadWithFeedback } from "@/utils/download";
 import { toast } from "@/utils/feedback";
 
 const result = ref({
@@ -169,15 +170,12 @@ const change = ({ coordinates, canvas }) => {
   previewImg.value = canvas.toDataURL();
 }
 
-const handleDownload = () => {
-  const link = document.createElement('a');
-  link.href = previewImg.value;
-  link.download = `裁剪结果.png`;
-  link.target = '_blank';
-  link.rel = 'noopener noreferrer';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+const handleDownload = async () => {
+  await saveDownloadWithFeedback({
+    source: previewImg.value,
+    fileName: "裁剪结果.png",
+    filterName: "PNG 图片",
+  });
 }
 
 const handleCancel = () => {

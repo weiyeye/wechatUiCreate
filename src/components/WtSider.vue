@@ -20,7 +20,6 @@ import { reactive, shallowRef } from "vue";
 import ConfigAppearance from "./ConfigAppearance.vue";
 import ConfigChat from "./ConfigChat.vue";
 import ConfigTemplate from "./ConfigTemplate.vue";
-import ConfigInstructions from "./ConfigInstructions.vue";
 import useStore from "@/store";
 const { useSystemStore } = useStore();
 
@@ -34,9 +33,6 @@ const menus = reactive([
   }, {
     label: "模板管理",
     value: "template",
-  }, {
-    label: "使用说明",
-    value: "instructions",
   }
 ])
 
@@ -48,7 +44,6 @@ const configComponents = shallowRef({
   appearance: ConfigAppearance,
   chat: ConfigChat,
   template: ConfigTemplate,
-  instructions: ConfigInstructions,
 });
 </script>
 

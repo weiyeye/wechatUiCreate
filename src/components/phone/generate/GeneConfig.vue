@@ -4,7 +4,7 @@
   </a-tooltip>
 
   <a-modal v-model:open="modalVisible" centered title="动图、视频生成配置" :width="600" :footer="null" @cancel="handleCancel">
-    <a-form :model="configState" :label-col="{ style: { width: '80px' }}">
+    <a-form :model="useChatStore.generateConfig" :label-col="{ style: { width: '80px' }}">
       <a-form-item label="会话间隔" style="margin-top:40px;">
         <a-space>
           <a-tooltip title="最小间隔">

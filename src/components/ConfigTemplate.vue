@@ -7,7 +7,7 @@
     <a-table size="small" :columns="columns" :data-source="useTemplateStore.list" :pagination="false" bordered :row-class-name="(_record, index) => (index % 2 === 1 ? 'table-striped' : null)">
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'title'">
-          <a-input v-model:value="record.title" maxlength="30" />
+          <a-input v-model:value="record.title" :maxlength="30" />
         </template>
         <template v-if="column.dataIndex === 'operation'">
           <a-space>
@@ -38,7 +38,6 @@
 <script setup>
 import { ref } from "vue";
 import _ from "lodash";
-import { DownOutlined } from '@ant-design/icons-vue';
 import useStore from "@/store";
 const { useTemplateStore, useChatStore } = useStore();
 import { toast } from "@/utils/feedback";
