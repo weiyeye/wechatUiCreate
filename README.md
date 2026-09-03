@@ -131,11 +131,3 @@ src-tauri/target/release/bundle/nsis/
 ## 数据与隐私
 
 角色、聊天记录、模板及大部分设置均保存在当前设备的浏览器/WebView 本地数据库中。项目不会主动将这些内容上传到远程服务器。清理浏览器数据或卸载应用前，请先导出需要保留的聊天记录。
-
-## 上游项目与致谢
-
-本项目基于 [Ele-Cat/vue3-wechat-tool](https://github.com/Ele-Cat/vue3-wechat-tool) 进行二次开发，并在其基础上加入 Tauri 2 桌面端、本地文件保存适配及相关体验优化。感谢原作者和所有贡献者。
-
-## 开源许可
-
-项目遵循 [MIT License](./LICENSE)。二次分发或修改时，请保留原始版权与许可声明。
